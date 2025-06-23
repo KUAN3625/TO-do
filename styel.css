@@ -1,0 +1,100 @@
+body{
+margin: 0;
+padding: 0;
+background-color: #1e1e1e;
+font-family: sans-serif;
+height: 100vh;
+display: flex;
+flex-direction: column;
+}
+
+/*主要區域*/
+main#board {
+flex: 1;/*佔滿空間*/
+position: relative;/*為定位做準備*/
+overflow: hidden;/*防超出*/
+}
+
+
+
+/*底部工具列*/
+
+.toolbar{
+display: flex;/*基礎排列**/
+justify-content: space-around;/***************平均分配**********/
+padding: 1rem;/*底部內距*/
+background-color: rgba(0, 0, 0, 0.8);/*半透明黑色背景*/
+backdrop-filter: blur(10px);/*背景模糊*/
+position: sticky ;/*貼底*/
+bottom: 0;
+}
+
+.toolbar button {
+background-color: #333;
+color: #fff;
+border: none;/*去邊框*/
+padding: 3rem 3rem;/*按鈕內距*/
+font-size: 1rem;/*字體大小*/
+border-radius: 0.5rem;/*圓角*/
+cursor: pointer;
+transition: background-color 0.3s ease;/*過渡效果*/
+}
+
+.toolbar button:hover {
+    background-color: #555;/*懸停變色*/
+}
+
+
+@media(min-window-width: 768px) {/*響應式設計，適用於大於768px的視窗寬度*/
+    .toolbar {
+        justify-content: center;/*居中排列**/
+        gap: 2rem;/*按鈕間距*/
+    }
+}
+
+
+
+.note {
+  width: 150px;
+  height: 150px;
+  background-image: url('img/Note-yellow.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: top left;
+  image-rendering: pixelated; /* 確保圖片像素化 */
+
+  /* 原本保留的設定 */
+  border: none;
+  padding: 50px 20px 0px 20px; /* 避開上面角色空間 */
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0);
+  cursor: move;
+  border-radius: 0; /* 因為圖有邊框 */
+  font-size: 0.9rem;
+  color: #000;
+  overflow-wrap: break-word;
+}
+
+
+
+.note.editing {
+  outline: 2px dashed #007bff; /* 或 border */
+  background-color: #fffbe6;
+  animation: blinkBorder 1s step-start infinite;
+}
+
+@keyframes blinkBorder {
+  50% {
+    outline-color: transparent;
+  }
+}
+
+.note.fade-out {
+  animation: fadeOutAndScale 0.2s forwards;
+}
+
+@keyframes fadeOutAndScale {
+  to {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
