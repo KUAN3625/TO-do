@@ -1,16 +1,19 @@
 const addBtn = document.getElementById("addBtn");
-const board = document.getElementById("board");
+const deleteBtn = document.getElementById("deleteBtn");
+const templateBtn = document.getElementById("templateBtn");
+const styleMenu = document.getElementById("styleMenu");
+
+const styles = ["note-yellow", "note-pink", "note-green"];
+let currentStyleIndex = 0;
+
+updateTemplateButtonColor();
 
 // 拖曳函式
 function makeDraggable(element) {
-  let offsetX = 0;
-  let offsetY = 0;
-  let isDragging = false;
+  let offsetX = 0, offsetY = 0, isDragging = false;
 
   element.addEventListener("mousedown", (e) => {
-    // 如果正在編輯文字就不要拖曳
     if (element.contentEditable === "true") return;
-
     isDragging = true;
     offsetX = e.clientX - element.offsetLeft;
     offsetY = e.clientY - element.offsetTop;
@@ -30,65 +33,75 @@ function makeDraggable(element) {
 
 // 建立便條
 addBtn.addEventListener("click", () => {
-const note = document.createElement("div");
-note.className = "note";
-note.innerHTML = `
-  <div class="note-sprite"></div>
-  <div class="note-content" contenteditable="false">雙擊編輯內容</div>
-`;
-
+  const note = document.createElement("div");
+  note.className = "note";
+  note.textContent = "雙擊編輯內容";
   note.style.position = "absolute";
-  note.style.top = "100px";
-  note.style.left = "100px";
   note.contentEditable = false;
 
-  // ✨ 加入動畫
-  note.addEventListener("dblclick", () => {
-  note.contentEditable = true;
-  note.focus();
+  const maxLeft = window.innerWidth - 180;
+  const maxTop = window.innerHeight - 250;
+  note.style.top = `${Math.floor(Math.random() * maxTop)}px`;
+  note.style.left = `${Math.floor(Math.random() * maxLeft)}px`;
 
-  // ✨ 加入動畫
-  note.classList.remove("animate"); // 重置動畫（才能重播）
-  void note.offsetWidth; // 強制重繪
-  note.classList.add("animate");
-});
-
+  note.classList.add(styles[currentStyleIndex]);
+  note.dataset.styleIndex = currentStyleIndex;
 
   board.appendChild(note);
   makeDraggable(note);
 
-  // 雙擊進入編輯模式
   note.addEventListener("dblclick", () => {
     note.contentEditable = true;
     note.focus();
   });
 
-  // 離開時結束編輯
   note.addEventListener("blur", () => {
     note.contentEditable = false;
   });
 
-  // 按 Enter 結束編輯（可選）
   note.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
-      e.preventDefault(); // 不換行
-      note.blur();        // 結束編輯
+      e.preventDefault();
+      note.blur();
     }
   });
 });
 
-
-
-// 點便條觸發刪除
-const deleteBtn = document.getElementById("deleteBtn");
-
+// 刪除全部便條
 deleteBtn.addEventListener("click", () => {
   document.querySelectorAll(".note").forEach(note => {
-    note.classList.add("fade-out"); // 套用動畫類別
-    setTimeout(() => {
-      note.remove(); // 等動畫結束再刪除元素
-    }, 200); // 這個時間必須與動畫長度一致
+    note.classList.add("fade-out");
+    setTimeout(() => note.remove(), 300);
   });
 });
 
+// 點選樣式選項 → 改變預設樣式
+document.querySelectorAll(".style-option").forEach(button => {
+  button.addEventListener("click", () => {
+    const selectedStyle = button.dataset.style;
+    currentStyleIndex = styles.indexOf(selectedStyle);
+    updateTemplateButtonColor();
+    styleMenu.classList.add("hidden");
+  });
+});
 
+// 懸停顯示選單
+templateBtn.addEventListener("mouseenter", () => {
+  styleMenu.classList.remove("hidden");
+});
+styleMenu.addEventListener("mouseleave", () => {
+  styleMenu.classList.add("hidden");
+});
+
+// 更新樣式按鈕背景顏色
+function updateTemplateButtonColor() {
+  const btn = document.getElementById("templateBtn");
+  const currentClass = styles[currentStyleIndex];
+  const styleColors = {
+    "note-yellow": "#fff8a6",
+    "note-pink": "#ffe6f0",
+    "note-green": "#e0ffcc"
+  };
+  btn.style.backgroundColor = styleColors[currentClass] || "#333";
+  btn.style.color = "#000";
+}

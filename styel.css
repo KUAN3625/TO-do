@@ -33,7 +33,7 @@ bottom: 0;
 background-color: #333;
 color: #fff;
 border: none;/*去邊框*/
-padding: 3rem 3rem;/*按鈕內距*/
+padding: 1.5rem 1.5rem;/*按鈕內距*/
 font-size: 1rem;/*字體大小*/
 border-radius: 0.5rem;/*圓角*/
 cursor: pointer;
@@ -74,8 +74,6 @@ transition: background-color 0.3s ease;/*過渡效果*/
   overflow-wrap: break-word;
 }
 
-
-
 .note.editing {
   outline: 2px dashed #007bff; /* 或 border */
   background-color: #fffbe6;
@@ -97,4 +95,93 @@ transition: background-color 0.3s ease;/*過渡效果*/
     opacity: 0;
     transform: scale(0.5);
   }
+}
+
+
+/*以下樣式*/
+
+.style-container {
+  position: relative; /* 讓 style-menu 以這個為定位對象 */
+}
+
+.note-pink {
+  background-image: url('img/Note-pink.png');
+  background-color: #ffe6f000;
+}
+
+.note-green {
+  background-image: url('img/Note-Green.png');
+  background-color: #ffe6f000;
+}
+
+.style-menu {
+  position: absolute;
+  bottom: 100%; /* 顯示在按鈕正上方 */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  z-index: 999;
+  margin-bottom: 0.5rem; /* 與按鈕留點距離 */
+
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(4px);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+.style-option {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  cursor: pointer;
+  opacity: 0.9;
+  transition: transform 0.2s ease;
+}
+
+
+.style-option:hover {
+  transform: scale(1.1);
+}
+
+.style-option.note-yellow {
+  background-color: #fff8a6;
+}
+.style-option.note-pink {
+  background-color: #fbc5b0;
+}
+.style-option.note-green {
+  background-color: #e0ffcc;
+}
+
+.hidden {
+  display: none;
+}
+
+/* 樣式選擇小圓按鈕通用樣式 */
+.style-option {
+  width: 36px;
+  height: 36px;
+  border-radius: 0.5rem;
+  border: 2px solid #fff;
+  cursor: pointer;
+  opacity: 1;
+  transition: transform 0.2s ease;
+  background-size: cover;
+  background-position: center;
+}
+
+/* 專屬純色背景（不使用便條樣式圖） */
+.style-option.note-yellow {
+  background-color: #fff8a6;
+  background-image: none !important;
+}
+.style-option.note-pink {
+  background-color: #f0c2b0;
+  background-image: none !important;
+}
+.style-option.note-green {
+  background-color: #ccecc6;
+  background-image: none !important;
 }
