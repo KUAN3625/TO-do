@@ -19,7 +19,9 @@ function makeDraggable(element) {
     isDragging = true;
     offsetX = e.clientX - element.offsetLeft;
     offsetY = e.clientY - element.offsetTop;
-    element.style.zIndex = "1000";
+    element.style.zIndex = ++zIndexCounter;
+
+;
   });
 
   document.addEventListener("mousemove", (e) => {
@@ -132,6 +134,63 @@ function updateTemplateButtonColor() {
   btn.style.backgroundColor = styleColors[currentClass] || "#333";
   btn.style.color = "#000";
 }
+
+function makeDraggable(element) {
+  let offsetX = 0, offsetY = 0, isDragging = false;
+
+  element.addEventListener("mousedown", (e) => {
+    if (element.contentEditable === "true") return;
+    isDragging = true;
+    offsetX = e.clientX - element.offsetLeft;
+    offsetY = e.clientY - element.offsetTop;
+    element.style.zIndex = "1000";
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (!isDragging) return;
+
+    const newLeft = e.clientX - offsetX;
+    const newTop = e.clientY - offsetY;
+
+    // 嘗試磁吸其他便條
+    const SNAP_DISTANCE = 15; // 磁吸觸發距離
+    let snappedLeft = newLeft;
+    let snappedTop = newTop;
+
+    document.querySelectorAll(".note").forEach(other => {
+      if (other === element) return; // 不和自己比
+
+      const otherRect = other.getBoundingClientRect();
+      const thisRect = element.getBoundingClientRect();
+
+      // 左對齊
+      if (Math.abs(newLeft - other.offsetLeft) < SNAP_DISTANCE) {
+        snappedLeft = other.offsetLeft;
+      }
+      // 右對齊
+      if (Math.abs((newLeft + thisRect.width) - (other.offsetLeft + otherRect.width)) < SNAP_DISTANCE) {
+        snappedLeft = other.offsetLeft + otherRect.width - thisRect.width;
+      }
+      // 上對齊
+      if (Math.abs(newTop - other.offsetTop) < SNAP_DISTANCE) {
+        snappedTop = other.offsetTop;
+      }
+      // 下對齊
+      if (Math.abs((newTop + thisRect.height) - (other.offsetTop + otherRect.height)) < SNAP_DISTANCE) {
+        snappedTop = other.offsetTop + otherRect.height - thisRect.height;
+      }
+    });
+
+    element.style.left = `${snappedLeft}px`;
+    element.style.top = `${snappedTop}px`;
+  });
+
+  document.addEventListener("mouseup", () => {
+    isDragging = false;
+    saveNotesToLocalStorage();
+  });
+}
+
 
 // 初次載入時恢復便條
 loadNotesFromLocalStorage();
